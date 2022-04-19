@@ -26,7 +26,7 @@ public class InputHandler implements KeyListener {
         if (!keysPressed.contains(e.getKeyCode())) {
             keysPressed.add(e.getKeyCode());
         }
-        player.SetKeysPressed(keysPressed);
+        player.setKeysPressed(keysPressed);
     }
 
     @Override
@@ -34,6 +34,6 @@ public class InputHandler implements KeyListener {
         if (keysPressed.contains(e.getKeyCode())) {
             keysPressed.remove(new Integer(e.getKeyCode()));
         }
-        player.SetKeysPressed(keysPressed);
+        player.setKeysPressed(keysPressed);
     }
 }

@@ -17,11 +17,6 @@ public class InputHandler implements KeyListener {
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    @Override
     public void keyPressed(KeyEvent e) {
         if (!keysPressed.contains(e.getKeyCode())) {
             keysPressed.add(e.getKeyCode());
@@ -35,5 +30,10 @@ public class InputHandler implements KeyListener {
             keysPressed.remove(new Integer(e.getKeyCode()));
         }
         player.setKeysPressed(keysPressed);
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
     }
 }

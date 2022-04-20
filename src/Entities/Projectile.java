@@ -3,25 +3,27 @@ package Entities;
 import javax.swing.*;
 import java.awt.*;
 
-public class Projectile extends JPanel implements Runnable {
+public class Projectile extends JLabel implements Runnable {
+    private final JFrame frame;
+    private final float speed;
     private int xPos;
     private int yPos;
-    Rectangle rect;
-    double angle;
-    JFrame frame;
-    float speed;
+    private final byte[] direction = {0, 0, 0, 0};
 
     public Projectile(double angle, Rectangle rect, float speed, JFrame frame) {
-        this.rect = rect;
-        this.angle = angle;
         this.frame = frame;
-        this.speed = speed + 5;
+        this.speed = speed + 3;
+        this.setIcon(new ImageIcon("resources/projectile.png"));
 
         xPos = rect.x + (rect.width / 2) / 2;
         yPos = rect.y + (rect.height / 2) / 2;
 
-        this.setBackground(Color.gray);
-        frame.getContentPane().add(this);
+        switch ((int) Math.toDegrees(angle)) {
+            case 0: direction[0] = 1; yPos -= rect.height / 2; break;
+            case 90: direction[1] = 1; xPos += rect.width / 2; break;
+            case 180: direction[2] = 1; yPos += rect.height / 2; break;
+            case 270: direction[3] = 1; xPos -= rect.width / 2; break;
+        }
 
         Thread shootThread = new Thread(this);
         shootThread.start();
@@ -30,17 +32,11 @@ public class Projectile extends JPanel implements Runnable {
     @Override
     public void run() {
         while(true) {
-            switch ((int) Math.toDegrees(angle)) {
-                case 0: yPos -= speed; break;
-                case 90: xPos += speed; break;
-                case 180: yPos += speed; break;
-                case 270: xPos -= speed; break;
-            }
+            xPos += speed * direction[1] + -speed * direction[3];
+            yPos += -speed * direction[0] + speed * direction[2];
             this.setBounds(xPos, yPos, 50, 50);
 
-            if (Math.abs(xPos) > frame.getWidth() || Math.abs(yPos) > frame.getHeight()) {
-                break;
-            }
+            if (Math.abs(xPos) > frame.getWidth() || Math.abs(yPos) > frame.getHeight()) {break;}
 
             try {
                 Thread.sleep(16);

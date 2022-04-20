@@ -7,17 +7,22 @@ import java.util.*;
 public class Player extends JLabel implements Runnable {
     private final JFrame frame;
     private final float speed;
+    private final int fireRate;
     private final int diagonalSpeed;
+
     private int vectorX;
     private int vectorY;
     private double angle;
-    private boolean canShoot = true;
+    private boolean shooting;
+    private int framesSinceLastShoot;
 
-    private final static int[][] angles = {{0, 270}, {0, 0, 180}, {0, 90}};
+    private final static int[][] angles = {{0, 270}, {0, 0, 180}, {0, 90}}; // Constant
 
-    public Player(JFrame frame, float speed) {
+    public Player(JFrame frame, float speed, float fireRate) {
         this.frame = frame;
         this.speed = speed;
+        this.fireRate = (int) (60 / fireRate);
+        this.framesSinceLastShoot = this.fireRate;
         this.diagonalSpeed = (int) Math.sqrt(Math.pow(speed, 2) / 2);
         this.setBounds(frame.getSize().width / 2 - 50, frame.getSize().height / 2 - 50, 100, 100);
 
@@ -30,17 +35,15 @@ public class Player extends JLabel implements Runnable {
     public void setKeysPressed(ArrayList<Integer> keysPressed) {
         vectorX = 0;
         vectorY = 0;
-        if (!keysPressed.isEmpty()) { // Keybinds
+        shooting = false;
+        if (!keysPressed.isEmpty()) { // Keybindings
             for (int keyCode: keysPressed) {
                 switch (keyCode) {
                     case 37: case 65: vectorX -= speed; break; // Up (W)
-                    case 38: case 87: vectorY -= speed; break;// Right (D)
-                    case 39: case 68: vectorX += speed; break;// Down (S)
-                    case 40: case 83: vectorY += speed; break;// Left (A)
-                    case 32: if (canShoot) { // Shooting (Space)
-                        canShoot = false;
-                        frame.getContentPane().add(new Projectile(angle, this.getBounds(), speed, frame));
-                    }
+                    case 38: case 87: vectorY -= speed; break; // Right (D)
+                    case 39: case 68: vectorX += speed; break; // Down (S)
+                    case 40: case 83: vectorY += speed; break; // Left (A)
+                    case 32: shooting = true; break; // Shoot (Space)
                 }
             }
 
@@ -66,13 +69,18 @@ public class Player extends JLabel implements Runnable {
         graphics2D.drawImage(new ImageIcon("resources/player.png").getImage(), 0, 0, null);
     }
 
-    private void Update() { // Player clock (runs on separate thread to not interfere with input)
-        int framesPassed = 0;
+    @Override
+    public void run() { // Player clock (runs on separate thread to not interfere with input)
         while (true) {
-            if (vectorX != 0 || vectorY != 0) { this.setLocation(this.getLocation().x + vectorX, this.getLocation().y + vectorY); }
+            if (vectorX != 0 || vectorY != 0) { // Movement
+                this.setLocation(this.getLocation().x + vectorX, this.getLocation().y + vectorY);
+            }
 
-            if (!canShoot && framesPassed >= 30) { canShoot = true; framesPassed = 0; }
-            framesPassed++;
+            if (shooting && framesSinceLastShoot >= fireRate) { // Shooting
+                framesSinceLastShoot = 0;
+                frame.getContentPane().add(new Projectile(frame, angle, this.getBounds(), speed));
+            }
+            framesSinceLastShoot++;
 
             try {
                 Thread.sleep(16);
@@ -81,9 +89,5 @@ public class Player extends JLabel implements Runnable {
                 break;
             }
         }
-    }
-    @Override
-    public void run() {
-        Update();
     }
 }

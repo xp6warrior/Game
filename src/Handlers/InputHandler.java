@@ -20,20 +20,22 @@ public class InputHandler implements KeyListener {
     public void keyPressed(KeyEvent e) {
         if (!keysPressed.contains(e.getKeyCode())) {
             keysPressed.add(e.getKeyCode());
+            //System.out.println(e.getKeyChar()+" enter");
+            player.setKeysPressed(keysPressed);
         }
-        player.setKeysPressed(keysPressed);
+
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         if (keysPressed.contains(e.getKeyCode())) {
             keysPressed.remove(new Integer(e.getKeyCode()));
+            //System.out.println(e.getKeyChar()+" exit");
+            player.setKeysPressed(keysPressed);
         }
-        player.setKeysPressed(keysPressed);
+
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
+    public void keyTyped(KeyEvent e) {}
 }

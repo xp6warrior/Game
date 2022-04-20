@@ -6,7 +6,7 @@ public class Initialise {
     public static void main(String[] args) {
         GameWindow gameWindow = new GameWindow();
 
-        Player player = new Player(gameWindow, 5);
+        Player player = new Player(gameWindow, 5, 1);
         new InputHandler(gameWindow, player);
     }
 }

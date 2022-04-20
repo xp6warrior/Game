@@ -4,7 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 
-public class Player extends JLabel implements Runnable {
+public class Player extends JPanel implements Runnable {
+    private final JFrame frame;
     private final float speed;
     private final int diagonalSpeed;
     private int vectorX;
@@ -14,15 +15,17 @@ public class Player extends JLabel implements Runnable {
     private final static int[][] angles = {{0, 270}, {0, 0, 180}, {0, 90}};
 
     public Player(JFrame frame, float speed) {
+        this.frame = frame;
         this.speed = speed;
+
         this.diagonalSpeed = (int) Math.sqrt(Math.pow(speed, 2) / 2);
         this.setBounds(frame.getSize().width / 2 - 50, frame.getSize().height / 2 - 50, 100, 100);
+        this.setOpaque(false);
 
         Thread movementThread = new Thread(this);
         movementThread.start();
 
         frame.getContentPane().add(this);
-        this.repaint();
     }
 
     public void setKeysPressed(ArrayList<Integer> keysPressed) {
@@ -31,10 +34,12 @@ public class Player extends JLabel implements Runnable {
         if (!keysPressed.isEmpty()) {
             for (int keyCode: keysPressed) { // Calculates speed for each vector
                 switch (keyCode) {
-                    case 65: vectorX -= speed; break;
-                    case 87: vectorY -= speed; break;
-                    case 68: vectorX += speed; break;
-                    case 83: vectorY += speed; break;
+                    case 37: case 65: vectorX -= speed; break;
+                    case 38: case 87: vectorY -= speed; break;
+                    case 39: case 68: vectorX += speed; break;
+                    case 40: case 83: vectorY += speed; break;
+
+                    case 32: new Projectile(angle, this.getBounds(), speed, frame); break;
                 }
             }
             if (Math.abs(vectorX) == Math.abs(vectorY) && vectorX != 0) { // Normalises the movement vectors

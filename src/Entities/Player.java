@@ -22,6 +22,7 @@ public class Player extends JLabel implements Runnable {
         movementThread.start();
 
         frame.getContentPane().add(this);
+        this.repaint();
     }
 
     public void setKeysPressed(ArrayList<Integer> keysPressed) {

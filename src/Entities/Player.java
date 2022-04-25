@@ -72,15 +72,32 @@ public class Player extends JLabel implements Runnable {
     @Override
     public void run() { // Player clock (runs on separate thread to not interfere with input)
         while (true) {
-            if (vectorX != 0 || vectorY != 0) { // Movement
-                this.setLocation(this.getLocation().x + vectorX, this.getLocation().y + vectorY);
+            int vectorXWithBorderCollision = vectorX; // Frame border collision
+            int vectorYWithBorderCollision = vectorY;
+            if (this.getX()+this.getWidth() > frame.getContentPane().getWidth()) {
+                vectorXWithBorderCollision = -1;
             }
+            if (this.getX() < frame.getContentPane().getX()) {
+                vectorXWithBorderCollision = 1;
+            }
+            if (this.getY()+this.getHeight() > frame.getContentPane().getHeight()) {
+                vectorYWithBorderCollision = -1;
+            }
+            if (this.getY() < frame.getContentPane().getY()) {
+                vectorYWithBorderCollision = 1;
+            }
+
+            if (vectorX != 0 || vectorY != 0) { // Movement
+                this.setLocation(this.getX() + vectorXWithBorderCollision, this.getY() + vectorYWithBorderCollision);
+            }
+
 
             if (shooting && framesSinceLastShoot >= fireRate) { // Shooting
                 framesSinceLastShoot = 0;
                 frame.getContentPane().add(new Projectile(frame, angle, this.getBounds(), speed));
             }
             framesSinceLastShoot++;
+
 
             try {
                 Thread.sleep(16);

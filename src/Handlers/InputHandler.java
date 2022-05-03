@@ -30,7 +30,6 @@ public class InputHandler implements KeyListener {
     public void keyReleased(KeyEvent e) {
         if (keysPressed.contains(e.getKeyCode())) {
             keysPressed.remove(new Integer(e.getKeyCode()));
-            //System.out.println(e.getKeyChar()+" exit");
             player.setKeysPressed(keysPressed);
         }
 

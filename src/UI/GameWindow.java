@@ -13,6 +13,10 @@ public class GameWindow extends JFrame {
         this.setTitle("Game by xp6warrior!");
         float[] hsb = Color.RGBtoHSB(255, 217, 168, null);
         this.getContentPane().setBackground(Color.getHSBColor(hsb[0], hsb[1], hsb[2]));
+
+        this.add(new Obstacle(new Rectangle(10,10,100,100)));
+        this.add(new Obstacle(new Rectangle(400, 600, 200, 320)));
+
         this.setVisible(true);
     }
 }
